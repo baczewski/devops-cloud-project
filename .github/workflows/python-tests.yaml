@@ -31,4 +31,4 @@ jobs:
             run: |
               cd $GITHUB_WORKSPACE
               export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
-              python3 -m unittest ./tests.py
+              python3 -m unittest tests.py
