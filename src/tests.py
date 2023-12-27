@@ -3,7 +3,7 @@ import json
 import requests
 import unittest
 
-from main import app
+from src.main import app
 from dotenv import load_dotenv
 
 
