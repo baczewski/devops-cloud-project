@@ -1,0 +1,33 @@
+name: Python-Tests
+
+on:
+    push:
+      branches:
+        - 'master'
+        - 'dev'
+    pull_request:
+      branches:
+        - 'master'     
+
+jobs:
+    Run-Python-Tests:
+        name: Run Python Tests
+        runs-on: ubuntu-latest
+        steps:
+          - name: Setup Python
+            uses: actions/setup-python@v4
+            with:
+              python-version: 3.12.0
+    
+          - name: Checkout Code
+            uses: actions/checkout@v3
+
+          - name: Install dependencies
+            run: |
+              python3 -m pip install --upgrade pip
+              pip install -r src/requirements.txt
+
+          - name: Run Tests
+            run: |
+              export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
+              python3 -m unittest src/app_test.py

@@ -39,12 +39,14 @@ class MovieAPI:
                                    time_window: TimeWindow) -> list:
         time_window_str = self.__get_time_window_str(time_window)
 
-        url = f"https://api.themoviedb.org/3/trending/ \
-                {media_type}/{time_window_str}"
+        url = "https://api.themoviedb.org/3/trending/"
+        params = f"{media_type}/{time_window_str}"
 
-        response = await self.__request_get_async(url)
+        full_url = url + params
+
+        response = await self.__request_get_async(full_url)
         data = json.loads(response.text)
-
+    
         return data["results"]
 
     async def __request_get_async(self, url: str) -> requests.Response:
