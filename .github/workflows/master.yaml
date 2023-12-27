@@ -151,11 +151,8 @@ jobs:
     needs: [Run-Python-Tests]
 
     steps:
-        - name: Download Code
-          uses: actions/download-artifact@v3
-          with:
-            name: code
-            path: .
+        - name: Checkout Code
+          uses: actions/checkout@v3
 
         - name: Build Image
           run: docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-api:${{ github.sha }} --build-arg MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }} .
@@ -177,11 +174,8 @@ jobs:
     needs: [Create-And-Scan-Docker-Image]
 
     steps:
-        - name: Download Code
-          uses: actions/download-artifact@v3
-          with:
-            name: code
-            path: .
+        - name: Checkout Code
+          uses: actions/checkout@v3
 
         # The API key does leak, so it might be better to put it on AWS container and fetch api from there!
         - name: Build Image
