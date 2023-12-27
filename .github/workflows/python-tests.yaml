@@ -29,5 +29,6 @@ jobs:
 
           - name: Run Tests
             run: |
+              echo "PYTHONPATH=mlprepare" >> $GITHUB_ENV
               export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
               python3 -m unittest src/tests.py

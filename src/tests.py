@@ -1,9 +1,10 @@
 import os
+import sys
 import json
 import requests
 import unittest
 
-from src.main import app
+from main import app
 from dotenv import load_dotenv
 
 
@@ -33,4 +34,5 @@ class TestApp(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    sys.path.append(".")
     unittest.main()
