@@ -1,62 +1,61 @@
 name: Python-Code-Style
 
 on:
-    push:
-        branches:
-            - 'master'
-            - 'dev'
-    pull-request:
-        branches:
-            - 'master'
+  push:
+    branches:
+      - 'master'
+      - 'dev'
+  pull_request:
+    branches:
+      - 'master'
 
 jobs:
-    Use-Flake8:
-      runs-on: ubuntu-latest
+  Use-Flake8:
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Setup Python
-          uses: actions/setup-python@v4
-          with:
-            python-version: 3.12.0
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12.0
 
-        - name: Checkout Code
-          uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-        - name: Install flake8
-          run: pip install flake8
+      - name: Install flake8
+        run: pip install flake8
 
-        - name: Run flake8
-          uses: py-actions/flake8@v2
+      - name: Run flake8
+        uses: py-actions/flake8@v2
 
-      Use-MyPy:
-        runs-on: ubuntu-latest
+  Use-MyPy:
+    runs-on: ubuntu-latest
 
-        steps:
-          - name: Setup Python
-            uses: actions/setup-python@v4
-            with:
-              python-version: 3.12.0
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12.0
 
-          - name: Checkout Code
-            uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-          - name: Install flake8
-            run: pip install mypy
+      - name: Install flake8
+        run: pip install mypy
 
-          - name: Run mypy
-            uses: sasanquaneuf/mypy-github-action@releases/v1
-            with:
-              checkName: 'Use-MyPy'
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run mypy
+        uses: sasanquaneuf/mypy-github-action@releases/v1
+        with:
+          checkName: 'Use-MyPy'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      Use-Ruff:
-        runs-on: ubuntu-latest
+  Use-Ruff:
+    runs-on: ubuntu-latest
 
-        steps:
-         - name: Checkout Code
-           uses: actions/checkout@v3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
         
-         - name: Run Ruff
-           uses: chartboost/ruff-action@v1
-
+      - name: Run Ruff
+        uses: chartboost/ruff-action@v1
