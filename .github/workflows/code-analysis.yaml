@@ -103,19 +103,18 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-  Scan-With-Checkmarx:
-    name: Scan with Checkmarx
+  Scan-With-Spectral:
+    name: Scan with Spectral
     runs-on: ubuntu-latest
 
     needs: [Use-Flake8, Use-MyPy, Use-Ruff]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Checkmarx Action
-        uses: checkmarx-ts/checkmarx-github-action@master
+      - name: Install and run Spectral CI
+        uses: spectralops/spectral-github-action@v4
         with:
-          cxServer: https://checkmarx.company.com
-          cxToken: ${{ secrets.CX_TOKEN }}
-          cxTeam: \CxServer\SP\Company\TeamA
+          spectral-dsn: ${{ secrets.SPECTRAL_DSN }}
+          spectral-args: scan --ok
