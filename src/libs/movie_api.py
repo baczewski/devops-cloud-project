@@ -25,17 +25,17 @@ class MovieAPI:
     def set_api_token(self, api_token: str):
         self.__headers["Authorization"] = f"Bearer {api_token}"
 
-    async def get_trending_movies(self, time_window: TimeWindow 
+    async def get_trending_movies(self, time_window: TimeWindow
                                   = TimeWindow.DAY) -> list[Media]:
         results = await self.__get_trending_media("movie", time_window)
         return [Media(res["title"], res["vote_average"]) for res in results]
 
-    async def get_trending_shows(self, time_window: TimeWindow 
+    async def get_trending_shows(self, time_window: TimeWindow
                                  = TimeWindow.DAY) -> list[Media]:
         results = await self.__get_trending_media("tv", time_window)
         return [Media(res["name"], res["vote_average"]) for res in results]
 
-    async def __get_trending_media(self, media_type: str, 
+    async def __get_trending_media(self, media_type: str,
                                    time_window: TimeWindow) -> list:
         time_window_str = self.__get_time_window_str(time_window)
 
