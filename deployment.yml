@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: devops-project-deployment
+  name: movie-api-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: devops-project
+      app: movie-api
   template:
     metadata:
       labels:
-        app: devops-project
+        app: movie-api
     spec:
       containers:
-      - name: devops-project
-        image: sopies/drisnq:latest
+      - name: movie-api
+        image: sopies/movie-api:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 8000

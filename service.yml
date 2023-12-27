@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: devops-project-service
+  name: movie-api-service
 spec:
   selector:
-    app: devops-project
+    app: movie-api-project
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8080
+      port: 3000
+      targetPort: 8000
   type: LoadBalancer
