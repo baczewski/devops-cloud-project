@@ -46,7 +46,7 @@ class MovieAPI:
 
         response = await self.__request_get_async(full_url)
         data = json.loads(response.text)
-    
+
         return data["results"]
 
     async def __request_get_async(self, url: str) -> requests.Response:

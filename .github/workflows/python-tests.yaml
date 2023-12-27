@@ -30,4 +30,4 @@ jobs:
           - name: Run Tests
             run: |
               export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
-              python3 -m unittest src/app_test.py
+              python3 -m unittest src/tests.py
