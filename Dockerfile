@@ -1,13 +1,14 @@
-FROM ubuntu:latest
-
-RUN apt-get update && apt-get install -y python3 python3-pip
+FROM python:3-alpine
 
 COPY src/ /app
 
 WORKDIR /app
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-EXPOSE 8080
+ARG MOVIE_API_KEY
+ENV MOVIE_API_KEY ${MOVIE_API_KEY}
+
+EXPOSE 8000
 
 CMD [ "python3", "main.py" ]

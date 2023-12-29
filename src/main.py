@@ -4,13 +4,13 @@ import asyncio
 
 from dotenv import load_dotenv
 
-from libs.media import Media
 from libs.movie_api import MovieAPI
 from libs.movie_api import TimeWindow
 
 from flask import Flask
 
 app = Flask(__name__)
+
 
 async def get_trending_movies():
     load_dotenv()
@@ -19,6 +19,7 @@ async def get_trending_movies():
     media_data.sort(key=lambda x: x.rating, reverse=True)
     return json.dumps([json.loads(media.serialize()) for media in media_data])
 
+
 @app.route("/")
 def trending_movies():
     loop = asyncio.new_event_loop()
@@ -26,5 +27,6 @@ def trending_movies():
     movies = loop.run_until_complete(get_trending_movies())
     return movies
 
+
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(host="0.0.0.0", port=8000, debug=False)
