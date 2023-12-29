@@ -31,7 +31,7 @@ class TestApp(unittest.TestCase):
         response_object = json.loads(response.text)
 
         self.assertEqual(response_object["status_code"], 1)
-        self.assertEqual(response_object["success"], True)
+        self.assertTrue(response_object["success"])
 
 
 if __name__ == "__main__":
