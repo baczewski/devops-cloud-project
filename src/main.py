@@ -8,8 +8,12 @@ from libs.movie_api import MovieAPI
 from libs.movie_api import TimeWindow
 
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
 
+
+csrf = CSRFProtect()
 app = Flask(__name__)
+csrf.init_app(app)
 
 
 async def get_trending_movies():
