@@ -1,4 +1,4 @@
-name: Python-Code-Style
+name: Master-CI
 
 on:
   push:
