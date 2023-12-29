@@ -10,7 +10,8 @@ from dotenv import load_dotenv
 
 class TestApp(unittest.TestCase):
     def setUp(self):
-        app.config['WTF_CSRF_ENABLED'] = False
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_METHODS'] = []
         self.client = app.test_client()
 
         load_dotenv()
