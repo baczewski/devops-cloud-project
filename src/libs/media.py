@@ -45,4 +45,6 @@ if __name__ == "__main__":
     media_json = Media.deserializeJSON(json_data)
 
     assert media_json.title == "Test"
-    assert media_json.rating == 3.14
+
+    delta = 0.00001
+    assert 3.14 - delta < media_json.rating < 3.14 + delta
