@@ -6,6 +6,10 @@ WORKDIR /app
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+RUN addgroup -S user && adduser -S user -G user
+
+USER user
+
 ENV MOVIE_API_KEY=""
 
 EXPOSE 8000
