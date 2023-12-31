@@ -184,4 +184,33 @@ jobs:
 
         - name: Upload Image
           run: docker push ${{ secrets.DOCKER_USERNAME }}/movie-api:latest
-            
+
+  Deploy-To-AWS-EKS:
+    name: Deploy to AWS EKS cluster
+    runs-on: ubuntu-latest
+
+    needs: [Create-And-Upload-Docker-Image]
+    
+    steps:
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: '1.28.2' # default is latest stable
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name movie-api --region eu-north-1
+
+      - name: Deploy image to Amazon EKS
+        run: |
+          kubectl create secret generic secrets --from-literal=MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
+          kubectl apply -f eks/aws-auth.yaml
+          kubectl apply -f eks/deployment.yaml
+          kubectl apply -f eks/service.yaml

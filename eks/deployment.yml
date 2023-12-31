@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: movie-api-deployment
+  labels:
+    app: movie-api
 spec:
   replicas: 1
   selector:
@@ -17,3 +19,6 @@ spec:
         image: sopies/movie-api:latest
         ports:
         - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: secrets
