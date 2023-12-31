@@ -216,5 +216,5 @@ jobs:
           kubectl delete secret secrets
           kubectl create secret generic secrets --from-literal=MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
           kubectl apply -f eks/aws-auth.yaml
-          kubectl apply -f eks/deployment.yaml
-          kubectl apply -f eks/service.yaml
+          kubectl apply -f eks/deployment.yml
+          kubectl apply -f eks/service.yml
