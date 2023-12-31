@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM --platform=linux/amd64 python:3-alpine as build
 
 COPY src/ /app
 
