@@ -195,7 +195,7 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: '1.28.2' # default is latest stable
+          version: 'v1.28.2' # default is latest stable
         id: install
 
       - name: Configure AWS credentials
@@ -210,6 +210,7 @@ jobs:
 
       - name: Deploy image to Amazon EKS
         run: |
+          kubectl delete secret secrets
           kubectl create secret generic secrets --from-literal=MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
           kubectl apply -f eks/aws-auth.yaml
           kubectl apply -f eks/deployment.yaml
