@@ -192,6 +192,9 @@ jobs:
     needs: [Create-And-Upload-Docker-Image]
     
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         with:
