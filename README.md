@@ -1,10 +1,8 @@
 # DevOps Cloud Project
 
-A simple project for a DevOps Course 
+Финален проект за курса **Съвременни DevOps практики**, чиято чел е да упражним и приложним някои съвременни DevOps практики върху семпло приложение реализиращо Movie API.
 
-### TODO: Documentation
-
-# CI/CD Pipeline
+## CI/CD Pipeline
 
 При сливане на промени в `master` branch-a използваме цялостен CI/CD pipeline, който автоматизира различните етапи от разработката до доставката на приложението в AWS EKS.
 
@@ -31,3 +29,12 @@ A simple project for a DevOps Course
    - При успешно преминаване през предходните стъпки, приложението се автоматично деплойва в AWS EKS cluster. За създаването на контейнера се използва предварително създадения Docker image.
 
 Този CI/CD pipeline не само гарантира високо качество на кода и сигурност на приложението, но и улеснява и ускорява процеса на доставка на нови версии в продукцията.
+
+## Contributors
+
+Проектът е разработен от:
+
+- [Denislav Manahov](https://github.com/poinp)
+- [Martin Marinov](https://github.com/baczewski)
+
+PS: We are 100$ behind, because poinp didn't stop the large nodes...
