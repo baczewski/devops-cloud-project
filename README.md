@@ -8,6 +8,8 @@ A simple project for a DevOps Course
 
 При сливане на промени в `master` branch-a използваме цялостен CI/CD pipeline, който автоматизира различните етапи от разработката до доставката на приложението в AWS EKS.
 
+![master-ci-pipeline](https://github.com/baczewski/devops-cloud-project/blob/master/blob/master-ci.png)
+
 ### Етапи в CI/CD Pipeline-а:
 
 1. **Static Code Analysis (Flake8, MyPy, Ruff):**
