@@ -215,7 +215,7 @@ jobs:
         with:
           valueFile: 'eks/secrets.yaml'
           propertyPath: data['MOVIE_API_KEY']
-          value: ${{ secrets. MOVIE_API_KEY }}
+          value: ${{ secrets. MOVIE_API_KEY_BASE64 }}
           commitChange: false
 
       - name: Deploy image to Amazon EKS
