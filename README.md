@@ -42,6 +42,10 @@
 
 Този CI/CD pipeline не само гарантира високо качество на кода и сигурност на приложението, но и улеснява и ускорява процеса на доставка на нови версии в продукцията.
 
+## Диаграма на работата с AWS EKS
+
+![aws-eks-communication-diagram](https://github.com/baczewski/devops-cloud-project/blob/master/blob/aws-communication-diagram.jpg)
+
 ## Стартиране с Docker
 
 Следните команди трябва да бъдат изпълнени в тази последователност, за да се стартира приложението:
