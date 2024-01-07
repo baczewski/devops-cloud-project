@@ -18,7 +18,7 @@
 
 При сливане на промени в `master` branch-a използваме цялостен CI/CD pipeline, който автоматизира различните етапи от разработката до доставката на приложението в AWS EKS.
 
-![master-ci-pipeline](/blob/master/blob/master-ci.png)
+![master-ci-pipeline](/blob/master-ci.png)
 
 ### Етапи в CI/CD Pipeline-а:
 
@@ -44,7 +44,7 @@
 
 ## Диаграма на работата с AWS EKS
 
-![aws-eks-communication-diagram](/blob/master/blob/aws-communication-diagram.jpg)
+![aws-eks-communication-diagram](/blob/aws-communication-diagram.jpg)
 
 ## Стартиране с Docker
 
