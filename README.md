@@ -18,7 +18,7 @@
 
 При сливане на промени в `master` branch-a използваме цялостен CI/CD pipeline, който автоматизира различните етапи от разработката до доставката на приложението в AWS EKS.
 
-![master-ci-pipeline](https://github.com/baczewski/devops-cloud-project/blob/master/blob/master-ci.png)
+![master-ci-pipeline](/blob/master/blob/master-ci.png)
 
 ### Етапи в CI/CD Pipeline-а:
 
@@ -44,7 +44,7 @@
 
 ## Диаграма на работата с AWS EKS
 
-![aws-eks-communication-diagram](https://github.com/baczewski/devops-cloud-project/blob/master/blob/aws-communication-diagram.jpg)
+![aws-eks-communication-diagram](/blob/master/blob/aws-communication-diagram.jpg)
 
 ## Стартиране с Docker
 
@@ -59,9 +59,11 @@
 docker build -t image-name .
 
 # Стъпка 2: Стартиране на Контейнера
-docker run image-name
+docker run --env MOVIE_API_KEY=your-api-key image-name
 ```
 
+> При стартиране на контейнера е нужно да се подаде API ключ издаден от [The Movie Database](https://www.themoviedb.org/)
+> Възможно е да се подаде и environment variable със същото име при пускане на контейнера.
 ## Contributors
 
 Проектът е разработен от:
