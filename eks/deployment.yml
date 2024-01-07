@@ -19,6 +19,8 @@ spec:
         image: sopies/movie-api:latest
         ports:
         - containerPort: 8000
-        envFrom:
-        - secretRef:
-            name: secrets
+        env:
+          valueFrom:
+            secretKeyRef:
+              name: secrets
+              key: MOVIE_API_KEY
