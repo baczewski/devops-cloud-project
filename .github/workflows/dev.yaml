@@ -1,13 +1,17 @@
-name: Python-Code-Style
+name: Dev-CI
 
 on:
   push:
     branches:
-      - 'dev'
+      - dev
+  pull_request:
+    branches:
+      - "master"
 
 jobs:
   # Static style code analysis
   Use-Flake8:
+    name: Use Flake8
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +30,7 @@ jobs:
         uses: py-actions/flake8@v2
 
   Use-MyPy:
+    name: Use-MyPy
     runs-on: ubuntu-latest
 
     steps:
@@ -43,27 +48,53 @@ jobs:
       - name: Run mypy
         uses: sasanquaneuf/mypy-github-action@releases/v1
         with:
-          checkName: 'Use-MyPy'
+          checkName: "Use-MyPy"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Use-Ruff:
+    name: Use Ruff
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        
+
       - name: Run Ruff
         uses: chartboost/ruff-action@v1
 
-        
+  Run-Python-Tests:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+
+    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12.0
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r src/requirements.txt
+
+      - name: Run Tests
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
+          python3 -m unittest tests.py
+
   # Static security code analysis
   Scan-With-SonarCloud:
     name: Scan with SonarCloud
     runs-on: ubuntu-latest
 
-    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+    needs: [Run-Python-Tests]
 
     steps:
       - name: Checkout Code
@@ -79,7 +110,7 @@ jobs:
     name: Scan with Snyk
     runs-on: ubuntu-latest
 
-    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+    needs: [Run-Python-Tests]
 
     steps:
       - name: Checkout Code
@@ -103,7 +134,7 @@ jobs:
     name: Scan with Grype
     runs-on: ubuntu-latest
 
-    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+    needs: [Run-Python-Tests]
 
     steps:
       - name: Checkout Code
