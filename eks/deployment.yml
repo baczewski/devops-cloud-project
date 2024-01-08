@@ -17,6 +17,7 @@ spec:
       containers:
       - name: movie-api
         image: sopies/movie-api:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
