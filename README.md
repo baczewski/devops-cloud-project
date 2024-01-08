@@ -70,7 +70,7 @@ http://a88689c0a4dba4aa4ab9326f66d65dae-1833740573.eu-north-1.elb.amazonaws.com/
 docker build -t image-name .
 
 # Стъпка 2: Стартиране на Контейнера
-docker run -p 80:8080 --env MOVIE_API_KEY=your-api-key image-name
+docker run -p 80:8000 --env MOVIE_API_KEY=your-api-key image-name
 ```
 ### Важно
 > При стартиране на контейнера е нужно да се подаде API ключ издаден от [The Movie Database](https://www.themoviedb.org/)
