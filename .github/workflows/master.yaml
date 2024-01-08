@@ -3,31 +3,13 @@ name: Master-CI
 on:
   push:
     branches:
-      - 'master'
+      - "master"
   pull_request:
     branches:
-      - 'master'
+      - "master"
 
 jobs:
   # Static style code analysis
-  Use-Flake8:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12.0
-
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install flake8
-        run: pip install flake8
-
-      - name: Run flake8
-        uses: py-actions/flake8@v2
-
   Use-MyPy:
     runs-on: ubuntu-latest
 
@@ -43,10 +25,10 @@ jobs:
       - name: Install MyPy
         run: pip install mypy
 
-      - name: Run mypy
+      - name: Run MyPy
         uses: sasanquaneuf/mypy-github-action@releases/v1
         with:
-          checkName: 'Use-MyPy'
+          checkName: "Use-MyPy"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,17 +38,44 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        
+
       - name: Run Ruff
         uses: chartboost/ruff-action@v1
+        with:
+          src: "./src"
 
-        
+  Run-Python-Tests:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+
+    needs: [Use-MyPy, Use-Ruff]
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12.0
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r src/requirements.txt
+
+      - name: Run Tests
+        run: |
+          cd $GITHUB_WORKSPACE/src
+          export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
+          python3 -m unittest tests.py
+
   # Static security code analysis
   Scan-With-SonarCloud:
     name: Scan with SonarCloud
     runs-on: ubuntu-latest
 
-    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+    needs: [Run-Python-Tests]
 
     steps:
       - name: Checkout Code
@@ -82,7 +91,7 @@ jobs:
     name: Scan with Snyk
     runs-on: ubuntu-latest
 
-    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+    needs: [Run-Python-Tests]
 
     steps:
       - name: Checkout Code
@@ -106,64 +115,49 @@ jobs:
     name: Scan with Grype
     runs-on: ubuntu-latest
 
-    needs: [Use-Flake8, Use-MyPy, Use-Ruff]
+    needs: [Run-Python-Tests]
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - uses: anchore/scan-action@v3
+      - uses: anchore/scan-action@v3.5.0
         with:
           path: "."
-
-  Run-Python-Tests:
-    name: Run Python Tests
-    runs-on: ubuntu-latest
-
-    needs: [Scan-With-SonarCloud, Scan-With-Snyk, Scan-With-Grype]
-
-    steps:
-       - name: Setup Python
-         uses: actions/setup-python@v4
-         with:
-            python-version: 3.12.0
-        
-       - name: Checkout Code
-         uses: actions/checkout@v3
-
-       - name: Install dependencies
-         run: |
-            python3 -m pip install --upgrade pip
-            pip install -r src/requirements.txt
-
-       - name: Run Tests
-         run: |
-            cd $GITHUB_WORKSPACE/src
-            export MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
-            python3 -m unittest tests.py
 
   Create-And-Scan-Docker-Image:
     name: Create And Scan Docker Image
     runs-on: ubuntu-latest
 
-    needs: [Run-Python-Tests]
+    needs: [Scan-With-SonarCloud, Scan-With-Snyk, Scan-With-Grype]
 
     steps:
-        - name: Checkout Code
-          uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-        - name: Build Image
-          run: docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-api:${{ github.sha }} --build-arg MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }} .
+      - name: Build Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-api:latest --build-arg MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }} .
 
-        - name: Scan with Trivy
-          uses: aquasecurity/trivy-action@master
-          with:
-            image-ref: 'docker.io/${{ secrets.DOCKER_USERNAME }}/movie-api:${{ github.sha }}'
-            format: 'table'
-            exit-code: '1'
-            ignore-unfixed: true
-            vuln-type: 'os,library'
-            severity: 'CRITICAL,HIGH'
+      - name: Scan Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ secrets.DOCKER_USERNAME }}/movie-api:latest"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+      
+      - name: Scan Image with Grype
+        uses: anchore/scan-action@v3
+        id: imagescan
+        with:
+          image: "${{ secrets.DOCKER_USERNAME }}/movie-api:latest"
+          severity-cutoff: high
+          fail-build: true
+
+      - name: Dump Grype SARIF Report to Console
+        run: cat ${{ steps.imagescan.outputs.sarif }}
 
   Create-And-Upload-Docker-Image:
     name: Create And Upload Docker Image
@@ -172,30 +166,33 @@ jobs:
     needs: [Create-And-Scan-Docker-Image]
 
     steps:
-        - name: Checkout Code
-          uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-        # The API key does leak, so it might be better to put it on AWS container and fetch api from there!
-        - name: Build Image
-          run: docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-api:latest --build-arg MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }} .
+      # The API key does leak, so it might be better to put it on AWS container and fetch api from there!
+      - name: Build Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-api:latest --build-arg MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }} .
 
-        - name: Login to DockerHub
-          run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-        - name: Upload Image
-          run: docker push ${{ secrets.DOCKER_USERNAME }}/movie-api:latest
+      - name: Upload Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/movie-api:latest
 
   Deploy-To-AWS-EKS:
     name: Deploy to AWS EKS cluster
     runs-on: ubuntu-latest
 
     needs: [Create-And-Upload-Docker-Image]
-    
+
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: '1.28.2' # default is latest stable
+          version: "v1.28.2"
         id: install
 
       - name: Configure AWS credentials
@@ -208,9 +205,18 @@ jobs:
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name movie-api --region eu-north-1
 
+      - name: Add secret to secrets.yaml
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: 'eks/secrets.yaml'
+          propertyPath: data['MOVIE_API_KEY']
+          value: ${{ secrets. MOVIE_API_KEY_BASE64 }}
+          commitChange: false
+
       - name: Deploy image to Amazon EKS
         run: |
-          kubectl create secret generic secrets --from-literal=MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }}
+          kubectl apply -f eks/secrets.yaml
           kubectl apply -f eks/aws-auth.yaml
-          kubectl apply -f eks/deployment.yaml
-          kubectl apply -f eks/service.yaml
+          kubectl apply -f eks/deployment.yml
+          kubectl apply -f eks/service.yml
+          kubectl rollout restart deployment movie-api-deployment

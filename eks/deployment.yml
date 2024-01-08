@@ -5,7 +5,7 @@ metadata:
   labels:
     app: movie-api
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: movie-api
@@ -17,8 +17,12 @@ spec:
       containers:
       - name: movie-api
         image: sopies/movie-api:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
-        envFrom:
-        - secretRef:
-            name: secrets
+        env:
+        - name: MOVIE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: secrets
+              key: MOVIE_API_KEY
