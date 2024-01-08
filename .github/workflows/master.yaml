@@ -219,3 +219,4 @@ jobs:
           kubectl apply -f eks/aws-auth.yaml
           kubectl apply -f eks/deployment.yml
           kubectl apply -f eks/service.yml
+          kubectl rollout restart deployment movie-api-deployment
