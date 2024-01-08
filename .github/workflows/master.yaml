@@ -25,7 +25,7 @@ jobs:
       - name: Install MyPy
         run: pip install mypy
 
-      - name: Run mypy
+      - name: Run MyPy
         uses: sasanquaneuf/mypy-github-action@releases/v1
         with:
           checkName: "Use-MyPy"
@@ -41,6 +41,8 @@ jobs:
 
       - name: Run Ruff
         uses: chartboost/ruff-action@v1
+        with:
+          src: "./src"
 
   Run-Python-Tests:
     name: Run Python Tests
@@ -136,7 +138,7 @@ jobs:
       - name: Build Image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-api:latest --build-arg MOVIE_API_KEY=${{ secrets.MOVIE_API_KEY }} .
 
-      - name: Scan with Trivy
+      - name: Scan Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: "${{ secrets.DOCKER_USERNAME }}/movie-api:latest"
@@ -154,7 +156,7 @@ jobs:
           severity-cutoff: high
           fail-build: true
 
-      - name: Dump Grype SARIF report
+      - name: Dump Grype SARIF Report to Console
         run: cat ${{ steps.imagescan.outputs.sarif }}
 
   Create-And-Upload-Docker-Image:
@@ -190,7 +192,7 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: "v1.28.2" # default is latest stable
+          version: "v1.28.2"
         id: install
 
       - name: Configure AWS credentials
