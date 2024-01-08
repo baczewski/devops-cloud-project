@@ -151,7 +151,8 @@ jobs:
         id: imagescan
         with:
           image: "${{ secrets.DOCKER_USERNAME }}/movie-api:latest"
-          fail-build: false
+          severity-cutoff: high
+          fail-build: true
 
       - name: Dump Grype SARIF report
         run: cat ${{ steps.imagescan.outputs.sarif }}
