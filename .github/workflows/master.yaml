@@ -153,10 +153,8 @@ jobs:
           image: "${{ secrets.DOCKER_USERNAME }}/movie-api:latest"
           fail-build: false
 
-      - name: upload Anchore Image scan SARIF report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.imagescan.outputs.sarif }}
+      - name: Dump Grype SARIF report
+        run: echo ${{ steps.imagescan.outputs.sarif }}
 
   Create-And-Upload-Docker-Image:
     name: Create And Upload Docker Image
