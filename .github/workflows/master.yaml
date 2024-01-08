@@ -152,6 +152,9 @@ jobs:
           image: "${{ secrets.DOCKER_USERNAME }}/movie-api:latest"
           fail-build: false
 
+      - name: Inspect Grype SARIF report
+        run: cat ${{ steps.scan.outputs.sarif }}
+
   Create-And-Upload-Docker-Image:
     name: Create And Upload Docker Image
     runs-on: ubuntu-latest
