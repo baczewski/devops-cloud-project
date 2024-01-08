@@ -31,7 +31,7 @@ def getTimeWindow(time_window: str) -> TimeWindow | None:
 
 @app.route("/")
 async def index():
-    return "Welcome to the Movie API! We hope you enjoy your stay!"
+    return "Welcome to the Movie API! We hope you enjoy your stay! Cheers from Marto and Denkata!"
 
 
 @app.route("/movies")
